@@ -283,7 +283,7 @@ export function RobesPage({ products = [] }) {
                   <Link href={`/products/${robe.slug}`}>
                     <div className="aspect-[4/5] relative bg-white rounded-t-2xl overflow-hidden">
                       <Image
-                        src={robe.ProductImages[0].url || '/images/robes/cmgv89opa0028ztywhjo2g2pl.png'}
+                        src={robe.image || '/images/robes/cmgv89opa0028ztywhjo2g2pl.png'}
                         alt={robe.name}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out bg-white"
