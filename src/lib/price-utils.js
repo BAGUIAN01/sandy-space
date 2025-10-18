@@ -4,7 +4,7 @@
 
 /**
  * Formate un prix en FCFA de manière user-friendly
- * @param {number} price - Prix en EUR
+ * @param {number} price - Prix en XOF
  * @param {number} originalPrice - Prix original (optionnel)
  * @returns {object} - { formattedPrice, priceInFCFA, discountPercentage, savings }
  */
@@ -25,7 +25,7 @@ export function formatPrice(price, originalPrice = null) {
   
   // Calcul des économies
   const savings = originalPrice && originalPrice > price
-    ? Math.round((originalPrice - price) * 655)
+    ? Math.round((originalPrice - price))
     : 0
   
   const formattedSavings = savings > 0 
@@ -44,7 +44,7 @@ export function formatPrice(price, originalPrice = null) {
         currency: 'XOF',
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
-      }).format(Math.round(originalPrice * 655)).replace('XOF', 'FCFA')
+      }).format(Math.round(originalPrice)).replace('XOF', 'FCFA')
     : null
   
   return {
@@ -64,7 +64,7 @@ export function formatPrice(price, originalPrice = null) {
  * @returns {string} - Prix formaté court
  */
 export function formatPriceShort(price) {
-  const priceInFCFA = Math.round(price * 655)
+  const priceInFCFA = Math.round(price)
   
   if (priceInFCFA >= 1000000) {
     return `${Math.round(priceInFCFA / 1000000)}M FCFA`

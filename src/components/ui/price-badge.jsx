@@ -76,6 +76,8 @@ export function PriceDisplay({
   className = ""
 }) {
   const priceInfo = formatPriceWithIndicators(price, originalPrice)
+
+  console.log("priceInfo", priceInfo)
   
   const sizeClasses = {
     sm: "text-lg",

@@ -6,7 +6,22 @@ import { Loader2 } from 'lucide-react'
 
 export function RobesPageWrapper() {
   const { products, isLoading, isError } = useRobesProducts({ limit: 20 })
+
   console.log("products", products)
+  // Log détaillé des produits
+  console.log("🔍 RobesPageWrapper - Products:", products)
+  if (products && products.length > 0) {
+    products.forEach((product, index) => {
+      if (product.name.toLowerCase().includes('soirée') && product.name.toLowerCase().includes('noire')) {
+        console.log(`🖤 Robe soirée noire trouvée:`, {
+          name: product.name,
+          id: product.id,
+          image: product.image,
+          extension: product.image?.split('.').pop()
+        })
+      }
+    })
+  }
 
   if (isLoading) {
     return (

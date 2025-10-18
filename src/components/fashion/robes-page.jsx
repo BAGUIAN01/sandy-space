@@ -288,7 +288,11 @@ export function RobesPage({ products = [] }) {
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out bg-white"
                         onError={(e) => {
+                          console.log('Image error for:', robe.name, 'Original src:', robe.image)
                           e.target.src = '/images/robes/cmgv89opa0028ztywhjo2g2pl.png'
+                        }}
+                        onLoad={() => {
+                          console.log('Image loaded successfully for:', robe.name, 'Src:', robe.image)
                         }}
                       />
                       {/* Overlay subtil au hover */}

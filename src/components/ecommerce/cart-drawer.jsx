@@ -3,6 +3,8 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { CheckoutButton } from './checkout-button'
+import { WhatsAppButton } from './whatsapp-button'
 import { ShoppingCart, Heart, Trash2, Plus, Minus } from 'lucide-react'
 
 // Fonction utilitaire pour formater les prix en FCFA
@@ -174,10 +176,11 @@ export function CartDrawer({
             </div>
             
             {/* Actions */}
-            <div className="space-y-2">
-              <Button className="w-full cursor-pointer">
-                Commander ({formatPriceFCFA(total)})
-              </Button>
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 gap-2">
+                <CheckoutButton />
+                <WhatsAppButton />
+              </div>
               
               <Button 
                 variant="outline" 
