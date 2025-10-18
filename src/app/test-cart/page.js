@@ -139,11 +139,11 @@ export default function TestCartPage() {
         <div className="mt-12 bg-white rounded-xl p-6 shadow-sm border">
           <h2 className="text-2xl font-bold mb-4">Instructions de test</h2>
           <div className="space-y-3 text-gray-600">
-            <p>• <strong>Ajouter au panier:</strong> Cliquez sur le bouton "Ajouter au panier" sur chaque produit</p>
+            <p>• <strong>Ajouter au panier:</strong> Cliquez sur le bouton &quot;Ajouter au panier&quot; sur chaque produit</p>
             <p>• <strong>Notifications:</strong> Des notifications apparaîtront en haut à droite</p>
             <p>• <strong>Panier:</strong> Le compteur dans le header se mettra à jour automatiquement</p>
-            <p>• <strong>Ouvrir le panier:</strong> Cliquez sur l'icône panier dans le header</p>
-            <p>• <strong>Wishlist:</strong> Cliquez sur l'icône cœur pour ajouter aux favoris</p>
+            <p>• <strong>Ouvrir le panier:</strong> Cliquez sur l&apos;icône panier dans le header</p>
+            <p>• <strong>Wishlist:</strong> Cliquez sur l&apos;icône cœur pour ajouter aux favoris</p>
             <p>• <strong>Persistance:</strong> Les données sont sauvegardées dans le localStorage</p>
           </div>
         </div>

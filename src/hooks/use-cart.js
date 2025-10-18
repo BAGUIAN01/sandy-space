@@ -56,7 +56,7 @@ export function useCart() {
         item.id === itemId ? { ...item, quantity } : item
       )
     )
-  }, [])
+  }, [removeFromCart])
 
   const removeFromCart = useCallback((itemId) => {
     setItems(prevItems => prevItems.filter(item => item.id !== itemId))

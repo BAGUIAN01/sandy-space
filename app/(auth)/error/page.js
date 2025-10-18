@@ -44,7 +44,7 @@ export default function AuthErrorPage({ searchParams }) {
             </svg>
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Erreur d'authentification
+            Erreur d&apos;authentification
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             {error ? getErrorMessage(error) : 'Une erreur inattendue s\'est produite'}
@@ -63,7 +63,7 @@ export default function AuthErrorPage({ searchParams }) {
             href="/"
             className="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Link>
         </div>
       </div>

@@ -79,7 +79,7 @@ export default async function ProfilePage() {
                     <div className="flex items-center space-x-3">
                       <User className="h-5 w-5 text-gray-400" />
                       <div>
-                        <p className="text-sm text-gray-500">Nom d'utilisateur</p>
+                        <p className="text-sm text-gray-500">Nom d&apos;utilisateur</p>
                         <p className="font-medium">{user.username}</p>
                       </div>
                     </div>
