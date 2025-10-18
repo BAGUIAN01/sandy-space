@@ -14,6 +14,14 @@ import {
   Download
 } from 'lucide-react'
 
+/**
+ * Vérifie si l'URL d'image est bien un format supporté (jpg, jpeg, png).
+ */
+const isSupportedImage = (url = "") => {
+  if (!url) return false;
+  return /\.(jpe?g|png)$/i.test(url.split('?')[0]); // Ignore query params
+}
+
 export function ProductGallery({ 
   images = [], 
   showThumbnails = true, 
@@ -29,6 +37,8 @@ export function ProductGallery({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [offset, setOffset] = useState({ x: 0, y: 0 })
   const [imageErrors, setImageErrors] = useState({})
+
+  console.log("images", images)
   
   const containerRef = useRef(null)
   const imageRef = useRef(null)
@@ -42,12 +52,17 @@ export function ProductGallery({
   }
 
   // Obtenir l'URL de l'image avec fallback
+  // On accepte les formats jpg/jpeg et png
   const getImageUrl = (image, index) => {
     if (!image) return ''
+    let url = image.url
     if (imageErrors[index] && image.fallbackUrl) {
-      return image.fallbackUrl
+      url = image.fallbackUrl
     }
-    return image.url
+    if (!isSupportedImage(url)) {
+      return ''
+    }
+    return url
   }
 
   // Gérer le changement d'image
@@ -195,6 +210,8 @@ export function ProductGallery({
   const currentImage = images[currentIndex]
   const image_url = getImageUrl(currentImage, currentIndex)
 
+  console.log("image_url", image_url)
+
   // Ajout de l'état pour l'affichage de l'image en full screen/zoom
   const shouldShowImageFull = isFullscreen || zoomLevel > 1
 
@@ -231,7 +248,7 @@ export function ProductGallery({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-100">
-              <span className="text-gray-400">Image indisponible</span>
+              <span className="text-gray-400">Image indisponible ou format non supporté</span>
             </div>
           )}
 
@@ -383,7 +400,7 @@ export function ProductGallery({
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-900">
-                <span className="text-gray-400 text-lg">Image indisponible</span>
+                <span className="text-gray-400 text-lg">Image indisponible ou format non supporté</span>
               </div>
             )}
           </div>

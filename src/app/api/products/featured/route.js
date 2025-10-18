@@ -1,18 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-// Fonction pour obtenir l'image d'un produit par son ID
-function getProductImage(productId) {
-  if (!productId) {
-    return '/images/robes/backup/image13-1_2-png202504140234401.png'
-  }
-  
-  // Utiliser directement l'ID du produit pour le nom de l'image
-  const imageUrl = `/images/robes/${productId}.png`
-  console.log(`Product ID: ${productId}, Image: ${imageUrl}`)
-  return imageUrl
-}
-
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -186,7 +174,7 @@ export async function GET(request) {
         slug: product.slug,
         price: parseFloat(defaultVariant?.price || product.basePrice),
         originalPrice: defaultVariant?.compareAtPrice ? parseFloat(defaultVariant.compareAtPrice) : null,
-        image: getProductImage(product.id),
+        image: product.images?.[0]?.url || '/images/robes/cmgv89opa0028ztywhjo2g2pl.png',
         category: product.category.name,
         categorySlug: product.category.slug,
         size: sizes,

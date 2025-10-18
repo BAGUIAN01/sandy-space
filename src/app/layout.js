@@ -4,6 +4,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { BackToTop } from "@/components/layout/back-to-top";
 import { SWRProvider } from "@/components/providers/swr-provider";
+import AuthProvider from "@/components/providers/auth-provider";
+import { NotificationContainer } from "@/components/ui/notification-container";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair",
@@ -74,16 +76,19 @@ export default function RootLayout({ children }) {
           <body
             className={`${playfairDisplay.variable} ${inter.variable} antialiased`}
           >
-        <SWRProvider>
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
-            <BackToTop />
-          </div>
-        </SWRProvider>
+        <AuthProvider>
+          <SWRProvider>
+            <div className="min-h-screen flex flex-col">
+              <Header />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+              <BackToTop />
+              <NotificationContainer />
+            </div>
+          </SWRProvider>
+        </AuthProvider>
       </body>
     </html>
   );

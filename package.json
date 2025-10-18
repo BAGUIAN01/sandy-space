@@ -12,12 +12,17 @@
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
     "db:seed": "node prisma/seed.js",
-    "db:reset": "npx prisma migrate reset --force && npm run db:seed"
+    "db:reset": "npx prisma migrate reset --force && npm run db:seed",
+    "create-admin": "node scripts/create-admin.js",
+    "check-data": "node scripts/check-existing-data.js",
+    "safe-auth": "node scripts/safe-auth-integration.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
     "@prisma/client": "^6.17.1",
+    "@radix-ui/react-slot": "^1.2.3",
     "bcryptjs": "^2.4.3",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.0.0-rc19",
     "framer-motion": "^10.16.4",

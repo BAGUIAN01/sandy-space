@@ -142,7 +142,7 @@ model Product {
   basePrice      Decimal   @db.Decimal(10, 2)
   compareAtPrice Decimal?  @db.Decimal(10, 2) // Prix barré
   costPrice      Decimal?  @db.Decimal(10, 2) // Prix d'achat
-  currency       String    @default("EUR")
+  currency       String    @default("FCFA")
   sku            String    @unique
   barcode        String?
   weight         Int?      // En grammes

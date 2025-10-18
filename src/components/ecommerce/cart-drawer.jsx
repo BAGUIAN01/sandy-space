@@ -3,8 +3,17 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { formatPrice } from '@/lib/utils'
 import { ShoppingCart, Heart, Trash2, Plus, Minus } from 'lucide-react'
+
+// Fonction utilitaire pour formater les prix en FCFA
+const formatPriceFCFA = (price) => {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: 'XOF',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(price).replace('XOF', 'FCFA')
+}
 
 export function CartDrawer({ 
   isOpen, 
@@ -16,7 +25,7 @@ export function CartDrawer({
   className 
 }) {
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-  const shipping = subtotal > 50 ? 0 : 4.99
+  const shipping = subtotal > 50000 ? 0 : 3275 // 5€ = 3275 FCFA
   const total = subtotal + shipping
 
   return (
@@ -67,9 +76,12 @@ export function CartDrawer({
                     {/* Image */}
                     <div className="relative w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
                       <img
-                        src={item.image}
+                        src={item.image || '/images/robes/image13-1_2-png202504140234401.png'}
                         alt={item.name}
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = '/images/robes/image13-1_2-png202504140234401.png'
+                        }}
                       />
                     </div>
                     
@@ -87,7 +99,7 @@ export function CartDrawer({
                       
                       <div className="flex items-center justify-between">
                         <span className="font-semibold text-sm">
-                          {formatPrice(item.price)}
+                          {formatPriceFCFA(item.price)}
                         </span>
                         
                         {/* Quantity controls */}
@@ -97,7 +109,7 @@ export function CartDrawer({
                             size="sm"
                             onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
                             disabled={item.quantity <= 1}
-                            className="h-6 w-6 p-0"
+                            className="h-6 w-6 p-0 cursor-pointer"
                           >
                             <Minus className="h-3 w-3" />
                           </Button>
@@ -110,7 +122,7 @@ export function CartDrawer({
                             variant="ghost"
                             size="sm"
                             onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                            className="h-6 w-6 p-0"
+                            className="h-6 w-6 p-0 cursor-pointer"
                           >
                             <Plus className="h-3 w-3" />
                           </Button>
@@ -123,7 +135,7 @@ export function CartDrawer({
                       variant="ghost"
                       size="sm"
                       onClick={() => onRemoveItem(item.id)}
-                      className="h-6 w-6 p-0 text-gray-400 hover:text-red-500"
+                      className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 cursor-pointer"
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -141,7 +153,7 @@ export function CartDrawer({
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>Sous-total</span>
-                <span>{formatPrice(subtotal)}</span>
+                <span>{formatPriceFCFA(subtotal)}</span>
               </div>
               
               <div className="flex justify-between">
@@ -150,26 +162,26 @@ export function CartDrawer({
                   {shipping === 0 ? (
                     <Badge variant="success">Gratuite</Badge>
                   ) : (
-                    formatPrice(shipping)
+                    formatPriceFCFA(shipping)
                   )}
                 </span>
               </div>
               
               <div className="flex justify-between font-semibold text-base border-t pt-2">
                 <span>Total</span>
-                <span>{formatPrice(total)}</span>
+                <span>{formatPriceFCFA(total)}</span>
               </div>
             </div>
             
             {/* Actions */}
             <div className="space-y-2">
-              <Button className="w-full">
-                Commander ({formatPrice(total)})
+              <Button className="w-full cursor-pointer">
+                Commander ({formatPriceFCFA(total)})
               </Button>
               
               <Button 
                 variant="outline" 
-                className="w-full"
+                className="w-full cursor-pointer"
                 onClick={onClearCart}
               >
                 Vider le panier

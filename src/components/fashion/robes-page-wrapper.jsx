@@ -6,6 +6,7 @@ import { Loader2 } from 'lucide-react'
 
 export function RobesPageWrapper() {
   const { products, isLoading, isError } = useRobesProducts({ limit: 20 })
+  console.log("products", products)
 
   if (isLoading) {
     return (

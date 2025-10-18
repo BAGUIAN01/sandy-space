@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 import { PriceDisplay } from '@/components/ui/price-badge'
 import { 
   Star, 
@@ -88,9 +90,7 @@ export function ProductInfo({ product, selectedVariant, onVariantChange, onAddTo
                 className="w-6 h-6 object-contain"
               />
             )}
-            <span className="text-sm font-medium text-gray-600">
-              {product.brand.name}
-            </span>
+
           </div>
         )}
 
@@ -220,54 +220,64 @@ export function ProductInfo({ product, selectedVariant, onVariantChange, onAddTo
       </div>
 
       {/* Informations de livraison */}
-      <div className="bg-gray-50 rounded-xl p-4 space-y-3">
-        <div className="flex items-center gap-3">
-          <Truck className="h-5 w-5 text-gray-600" />
-          <div>
-            <p className="text-sm font-medium text-gray-900">Livraison</p>
-            <p className="text-sm text-gray-600">À partir de 50 000 FCFA • 2-3 jours ouvrés</p>
+      <Card>
+        <CardContent className="p-6 space-y-4">
+          <div className="flex items-center gap-3">
+            <Truck className="h-5 w-5 text-muted-foreground" />
+            <div>
+              <p className="text-sm font-medium text-foreground">Livraison</p>
+              <p className="text-sm text-muted-foreground">À partir de 50 000 FCFA • 2-3 jours ouvrés</p>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <Shield className="h-5 w-5 text-gray-600" />
-          <div>
-            <p className="text-sm font-medium text-gray-900">Retour facile</p>
-            <p className="text-sm text-gray-600">30 jours pour changer d'avis</p>
-          </div>
-        </div>
+          <Separator />
 
-        <div className="flex items-center gap-3">
-          <RotateCcw className="h-5 w-5 text-gray-600" />
-          <div>
-            <p className="text-sm font-medium text-gray-900">Échange gratuit</p>
-            <p className="text-sm text-gray-600">Sous 15 jours</p>
+          <div className="flex items-center gap-3">
+            <Shield className="h-5 w-5 text-muted-foreground" />
+            <div>
+              <p className="text-sm font-medium text-foreground">Retour facile</p>
+              <p className="text-sm text-muted-foreground">30 jours pour changer d'avis</p>
+            </div>
           </div>
-        </div>
-      </div>
+
+          <Separator />
+
+          <div className="flex items-center gap-3">
+            <RotateCcw className="h-5 w-5 text-muted-foreground" />
+            <div>
+              <p className="text-sm font-medium text-foreground">Échange gratuit</p>
+              <p className="text-sm text-muted-foreground">Sous 15 jours</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Description */}
-      <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-gray-900">Description</h3>
-        <div className="text-gray-700 leading-relaxed">
-          {showFullDescription ? (
-            <div dangerouslySetInnerHTML={{ __html: product.description || product.shortDescription || 'Description non disponible.' }} />
-          ) : (
-            <p className="line-clamp-3">
-              {product.shortDescription || product.description || 'Description non disponible.'}
-            </p>
-          )}
-          
-          {(product.shortDescription && product.description && product.description !== product.shortDescription) && (
-            <button
-              onClick={() => setShowFullDescription(!showFullDescription)}
-              className="text-blue-600 hover:text-blue-700 font-medium text-sm mt-2 transition-colors duration-200"
-            >
-              {showFullDescription ? 'Voir moins' : 'Lire la suite'}
-            </button>
-          )}
-        </div>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Description</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-muted-foreground leading-relaxed">
+            {showFullDescription ? (
+              <div dangerouslySetInnerHTML={{ __html: product.description || product.shortDescription || 'Description non disponible.' }} />
+            ) : (
+              <p className="line-clamp-3">
+                {product.shortDescription || product.description || 'Description non disponible.'}
+              </p>
+            )}
+            
+            {(product.shortDescription && product.description && product.description !== product.shortDescription) && (
+              <button
+                onClick={() => setShowFullDescription(!showFullDescription)}
+                className="text-primary hover:text-primary/80 font-medium text-sm mt-2 transition-colors duration-200"
+              >
+                {showFullDescription ? 'Voir moins' : 'Lire la suite'}
+              </button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Avertissement de stock bas */}
       {isLowStock && (

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { RobesFilters } from './robes-filters'
 import { PriceBadge, PriceDisplay } from '@/components/ui/price-badge'
 import { formatPriceWithIndicators, formatPriceShort } from '@/lib/price-utils'
+import { useCartActions } from '@/stores/cart-store'
 import { 
   Heart, 
   ShoppingCart, 
@@ -30,9 +31,13 @@ export function RobesPage({ products = [] }) {
   const [sortBy, setSortBy] = useState("popular")
   const [viewMode, setViewMode] = useState("grid")
   const [showFilters, setShowFilters] = useState(false)
-  const [wishlist, setWishlist] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+
+  console.log("robes", robes)
+  
+  // Store de panier et wishlist
+  const { addToCartWithNotification, toggleWishlistWithNotification, wishlistStore } = useCartActions()
   
   // Filtres avancés
   const [filters, setFilters] = useState({
@@ -155,14 +160,9 @@ export function RobesPage({ products = [] }) {
 
   // Les produits sont maintenant fournis via props depuis SWR
 
-  const toggleWishlist = async (robeId) => {
+  const toggleWishlist = async (robe) => {
     try {
-      // TODO: Implémenter l'ajout/suppression de la wishlist via API
-      setWishlist(prev => 
-        prev.includes(robeId) 
-          ? prev.filter(id => id !== robeId)
-          : [...prev, robeId]
-      )
+      toggleWishlistWithNotification(robe)
     } catch (error) {
       console.error('Error updating wishlist:', error)
     }
@@ -170,9 +170,7 @@ export function RobesPage({ products = [] }) {
 
   const addToCart = async (robe) => {
     try {
-      // TODO: Implémenter l'ajout au panier via API
-      console.log('Added to cart:', robe)
-      // Ici on pourrait ajouter une notification de succès
+      addToCartWithNotification(robe)
     } catch (error) {
       console.error('Error adding to cart:', error)
     }
@@ -285,10 +283,13 @@ export function RobesPage({ products = [] }) {
                   <Link href={`/products/${robe.slug}`}>
                     <div className="aspect-[4/5] relative bg-white rounded-t-2xl overflow-hidden">
                       <Image
-                        src={robe.image || '/images/robes/image13-1_2-png202504140234401.png'}
+                        src={robe.ProductImages[0].url || '/images/robes/cmgv89opa0028ztywhjo2g2pl.png'}
                         alt={robe.name}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out bg-white"
+                        onError={(e) => {
+                          e.target.src = '/images/robes/cmgv89opa0028ztywhjo2g2pl.png'
+                        }}
                       />
                       {/* Overlay subtil au hover */}
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-500" />
@@ -318,16 +319,16 @@ export function RobesPage({ products = [] }) {
                   {/* Actions rapides */}
                   <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
                     <button
-                      className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white hover:scale-110 transition-all duration-200 shadow-sm"
-                      onClick={() => toggleWishlist(robe.id)}
+                      className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white hover:scale-110 transition-all duration-200 shadow-sm cursor-pointer"
+                      onClick={() => toggleWishlist(robe)}
                     >
                       <Heart 
                         className={`h-4 w-4 ${
-                          wishlist.includes(robe.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'
+                          wishlistStore.isInWishlist(robe.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'
                         }`} 
                       />
                     </button>
-                    <button className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white hover:scale-110 transition-all duration-200 shadow-sm">
+                    <button className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white hover:scale-110 transition-all duration-200 shadow-sm cursor-pointer">
                       <Eye className="h-4 w-4 text-gray-600" />
                     </button>
                   </div>
@@ -405,7 +406,7 @@ export function RobesPage({ products = [] }) {
                     {/* Bouton d'ajout compact */}
                     <button
                       onClick={() => addToCart(robe)}
-                      className="bg-gradient-to-r from-gray-900 to-gray-800 text-white px-4 py-1.5 text-xs font-medium tracking-wide uppercase hover:from-gray-800 hover:to-gray-700 transition-all duration-200 rounded-full shadow-sm hover:shadow-md"
+                      className="bg-gradient-to-r from-gray-900 to-gray-800 text-white px-4 py-1.5 text-xs font-medium tracking-wide uppercase hover:from-gray-800 hover:to-gray-700 transition-all duration-200 rounded-full shadow-sm hover:shadow-md cursor-pointer"
                     >
                       Ajouter
                     </button>

@@ -9,7 +9,7 @@
  * @returns {object} - { formattedPrice, priceInFCFA, discountPercentage, savings }
  */
 export function formatPrice(price, originalPrice = null) {
-  const priceInFCFA = Math.round(price * 655)
+  const priceInFCFA = Math.round(price)
   
   const formattedPrice = new Intl.NumberFormat('fr-FR', {
     style: 'currency',

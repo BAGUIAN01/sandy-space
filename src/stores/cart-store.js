@@ -15,6 +15,29 @@ export const useCartStore = create(
       addToCart: (product, variant = null, quantity = 1) => {
         const itemId = variant ? `${product.id}-${variant.id}` : product.id
         
+        // Adapter les prix selon la structure des données
+        const getPrice = (product) => {
+          // Essayer différentes propriétés de prix et s'assurer que c'est un nombre
+          const price = product.basePrice || product.price || 0
+          return typeof price === 'number' ? price : parseFloat(price) || 0
+        }
+        
+        const getOriginalPrice = (product) => {
+          const price = product.compareAtPrice || product.originalPrice || null
+          return price ? (typeof price === 'number' ? price : parseFloat(price) || null) : null
+        }
+        
+        const getImage = (product) => {
+          // Essayer différentes propriétés d'image
+          if (product.images && product.images.length > 0) {
+            return product.images[0].url
+          }
+          return product.image || '/images/robes/image13-1_2-png202504140234401.png'
+        }
+        
+        const basePrice = getPrice(product)
+        const originalPrice = getOriginalPrice(product)
+        
         const cartItem = {
           id: itemId,
           productId: product.id,
@@ -22,9 +45,9 @@ export const useCartStore = create(
           name: product.name,
           slug: product.slug,
           variant: variant ? variant.attributes?.map(a => `${a.name}: ${a.value}`).join(', ') : null,
-          price: variant ? variant.price : product.basePrice,
-          originalPrice: variant ? variant.compareAtPrice : product.compareAtPrice,
-          image: product.images?.[0]?.url || '/images/placeholder-product.jpg',
+          price: basePrice, // Prix déjà en FCFA
+          originalPrice: originalPrice, // Prix déjà en FCFA
+          image: getImage(product),
           quantity,
           stock: variant ? variant.stock : null,
           addedAt: new Date().toISOString(),
@@ -182,7 +205,7 @@ export const useWishlistStore = create(
             variant: variant ? variant.attributes?.map(a => `${a.name}: ${a.value}`).join(', ') : null,
             price: variant ? variant.price : product.basePrice,
             originalPrice: variant ? variant.compareAtPrice : product.compareAtPrice,
-            image: product.images?.[0]?.url || '/images/placeholder-product.jpg',
+            image: product.images?.[0]?.url || product.image || '/images/robes/image13-1_2-png202504140234401.png',
             addedAt: new Date().toISOString(),
             // Métadonnées
             brand: product.brand?.name,
@@ -257,7 +280,7 @@ export const useCompareStore = create(
           slug: product.slug,
           price: product.basePrice,
           originalPrice: product.compareAtPrice,
-          image: product.images?.[0]?.url || '/images/placeholder-product.jpg',
+          image: product.images?.[0]?.url || product.image || '/images/robes/image13-1_2-png202504140234401.png',
           brand: product.brand?.name,
           category: product.category?.name,
           sku: product.sku,

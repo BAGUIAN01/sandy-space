@@ -5,6 +5,7 @@ import { ProductGallery } from './product-gallery'
 import { ProductInfo } from './product-info'
 import { ProductVariants } from './product-variants'
 import { RelatedProducts } from './related-products'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCartActions } from '@/stores/cart-store'
 import { Breadcrumbs } from '@/components/ui/breadcrumbs'
 import { 
@@ -200,41 +201,45 @@ export function ProductDetailPage({ product }) {
             </div>
 
             {/* Garanties */}
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Garanties</h3>
-              
-              <div className="space-y-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Garanties</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <div className="flex items-center gap-2">
                   <span className="text-green-600 text-sm">🛡️</span>
-                  <span className="text-sm text-gray-700">Garantie qualité 1 an</span>
+                  <span className="text-sm text-muted-foreground">Garantie qualité 1 an</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-blue-600 text-sm">🔒</span>
-                  <span className="text-sm text-gray-700">Paiement sécurisé</span>
+                  <span className="text-sm text-muted-foreground">Paiement sécurisé</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-purple-600 text-sm">📞</span>
-                  <span className="text-sm text-gray-700">Support client 24/7</span>
+                  <span className="text-sm text-muted-foreground">Support client 24/7</span>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
 
             {/* Partager */}
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Partager ce produit</h3>
-              
-              <div className="flex gap-3">
-                <button className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium transition-colors border border-gray-200">
-                  Facebook
-                </button>
-                <button className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium transition-colors border border-gray-200">
-                  Twitter
-                </button>
-                <button className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium transition-colors border border-gray-200">
-                  WhatsApp
-                </button>
-              </div>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Partager ce produit</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex gap-3">
+                  <button className="flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground py-3 px-4 rounded-lg text-sm font-medium transition-colors">
+                    Facebook
+                  </button>
+                  <button className="flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground py-3 px-4 rounded-lg text-sm font-medium transition-colors">
+                    Twitter
+                  </button>
+                  <button className="flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground py-3 px-4 rounded-lg text-sm font-medium transition-colors">
+                    WhatsApp
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 

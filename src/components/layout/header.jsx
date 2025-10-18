@@ -9,7 +9,10 @@ import { SearchBar, CartButton, WishlistButton } from '@/components/ecommerce/se
 import { CartDrawer } from '@/components/ecommerce/cart-drawer'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { useCart, useWishlist } from '@/hooks/use-cart'
+import { useCartStore, useWishlistStore } from '@/stores/cart-store'
+import AuthButton from '@/components/auth/auth-button'
+import ProfileMenu from '@/components/auth/profile-menu'
+import { NoSSR } from '@/components/ui/no-ssr'
 import {
   Menu,
   X,
@@ -42,12 +45,19 @@ export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [activeCategory, setActiveCategory] = useState(null)
+  const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
-  const { items: cartItems } = useCart()
-  const { items: wishlistItems } = useWishlist()
+  const cartStore = useCartStore()
+  const wishlistStore = useWishlistStore()
 
-  // Vérifier si nous sommes sur la page robes
-  const isRobesPage = pathname === '/products/robes'
+  // Vérifier si nous sommes sur une page liée aux robes
+  const isRobesPage = isMounted && (pathname === '/products/robes' || 
+                      pathname.startsWith('/products/robe-') ||
+                      pathname.startsWith('/products/') && pathname.includes('robe'))
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,8 +67,16 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const cartCount = cartItems?.length || 0
-  const wishlistCount = wishlistItems?.length || 0
+  const cartCount = cartStore.getTotalItems()
+  const wishlistCount = wishlistStore.items.length
+
+  // Fonction helper pour obtenir l'URL correcte
+  const getCategoryUrl = (categorySlug) => {
+    if (categorySlug === 'robes') {
+      return '/products/robes'
+    }
+    return `/products/category/${categorySlug}`
+  }
 
   return (
     <>
@@ -95,8 +113,8 @@ export function Header() {
                   onMouseLeave={() => setActiveCategory(null)}
                 >
                   <Link
-                    href={`/products/category/${category.slug}`}
-                    className={`flex items-center space-x-1 lg:space-x-2 transition-colors duration-200 font-body-semibold text-sm lg:text-base py-2 px-2 lg:px-3 rounded-lg hover:bg-gray-50 ${
+                    href={getCategoryUrl(category.slug)}
+                    className={`flex items-center space-x-1 lg:space-x-2 transition-colors duration-200 font-bold text-sm lg:text-base py-2 px-2 lg:px-3 rounded-lg hover:bg-gray-50 ${
                       category.slug === 'robes' && isRobesPage
                         ? 'text-amber-600 bg-amber-50 border border-amber-200'
                         : 'text-gray-700 hover:text-gray-900'
@@ -161,7 +179,7 @@ export function Header() {
                 onMouseEnter={() => setActiveCategory('collections')}
                 onMouseLeave={() => setActiveCategory(null)}
               >
-                <button className="flex items-center space-x-1 lg:space-x-2 text-gray-700 hover:text-gray-900 transition-colors duration-200 font-body-semibold text-sm lg:text-base py-2 px-2 lg:px-3 rounded-lg hover:bg-gray-50">
+                <button className="flex items-center space-x-1 lg:space-x-2 text-gray-700 hover:text-gray-900 transition-colors duration-200 font-bold text-sm lg:text-base py-2 px-2 lg:px-3 rounded-lg hover:bg-gray-50">
                   <span className="hidden lg:inline">Collections</span>
                   <span className="lg:hidden">Plus</span>
                   <ChevronDown className="h-3 w-3 lg:h-4 lg:w-4 transition-transform duration-200 group-hover:rotate-180" />
@@ -215,44 +233,44 @@ export function Header() {
                 <Search className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 group-hover:rotate-12" />
               </Button>
 
-              {/* Compte utilisateur */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="group h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 text-gray-600 hover:text-purple-600 hover:bg-purple-50 transition-all duration-300 ease-out hover:scale-105 active:scale-95 hidden sm:flex"
-              >
-                <User className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 group-hover:scale-110" />
-              </Button>
+              {/* Profile Menu */}
+              <NoSSR>
+                <ProfileMenu />
+              </NoSSR>
 
               {/* Wishlist */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {}}
-                className="group h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 text-gray-600 hover:text-red-500 hover:bg-red-50 transition-all duration-300 ease-out hover:scale-105 active:scale-95 relative hidden sm:flex"
-              >
-                <Heart className="h-4 w-4 sm:h-5 sm:w-5 transition-all duration-300 group-hover:fill-red-500 group-hover:scale-110" />
-                {wishlistCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center text-xs bg-red-500 text-white p-0 transition-all duration-300 group-hover:scale-110 group-hover:animate-pulse">
-                    {wishlistCount}
-                  </Badge>
-                )}
-              </Button>
+              <NoSSR>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {}}
+                  className="group h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 text-gray-600 hover:text-red-500 hover:bg-red-50 transition-all duration-300 ease-out hover:scale-105 active:scale-95 relative hidden sm:flex"
+                >
+                  <Heart className="h-4 w-4 sm:h-5 sm:w-5 transition-all duration-300 group-hover:fill-red-500 group-hover:scale-110" />
+                  {wishlistCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center text-xs bg-red-500 text-white p-0 transition-all duration-300 group-hover:scale-110 group-hover:animate-pulse">
+                      {wishlistCount}
+                    </Badge>
+                  )}
+                </Button>
+              </NoSSR>
 
               {/* Panier */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsCartOpen(true)}
-                className="group h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 text-gray-600 hover:text-green-600 hover:bg-green-50 transition-all duration-300 ease-out hover:scale-105 active:scale-95 relative"
-              >
-                <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
-                {cartCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center text-xs bg-green-600 text-white p-0 transition-all duration-300 group-hover:scale-110 group-hover:animate-bounce">
-                    {cartCount}
-                  </Badge>
-                )}
-              </Button>
+              <NoSSR>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => cartStore.setCartOpen(true)}
+                  className="group h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 text-gray-600 hover:text-green-600 hover:bg-green-50 transition-all duration-300 ease-out hover:scale-105 active:scale-95 relative"
+                >
+                  <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
+                  {cartCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center text-xs bg-green-600 text-white p-0 transition-all duration-300 group-hover:scale-110 group-hover:animate-bounce">
+                      {cartCount}
+                    </Badge>
+                  )}
+                </Button>
+              </NoSSR>
 
               {/* Menu mobile */}
               <Button
@@ -293,15 +311,19 @@ export function Header() {
                 {FASHION_CATEGORIES.slice(0, 3).map((category) => (
                   <Link
                     key={category.slug}
-                    href={`/products/category/${category.slug}`}
-                    className="group flex items-center space-x-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 active:bg-blue-100 active:scale-95 transition-all duration-200 ease-out py-3 px-4 rounded-xl hover:shadow-sm cursor-pointer"
+                    href={getCategoryUrl(category.slug)}
+                    className={`group flex items-center space-x-3 py-3 px-4 rounded-xl hover:shadow-sm cursor-pointer transition-all duration-200 ease-out ${
+                      category.slug === 'robes' && isRobesPage
+                        ? 'text-amber-600 bg-amber-50 border border-amber-200'
+                        : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50 active:bg-blue-100 active:scale-95'
+                    }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {(() => {
                       const IconComponent = iconMap[category.icon]
                       return IconComponent ? <IconComponent className="h-5 w-5 transition-transform duration-200 group-hover:scale-110 group-hover:text-blue-600" /> : null
                     })()}
-                    <span className="font-body-semibold transition-colors duration-200 group-hover:text-blue-600">{category.name}</span>
+                    <span className="font-bold transition-colors duration-200 group-hover:text-blue-600">{category.name}</span>
                   </Link>
                 ))}
                 
@@ -310,7 +332,7 @@ export function Header() {
                 
                 {/* Titre Collections */}
                 <div className="px-4 py-2">
-                  <span className="text-sm font-body-semibold text-gray-500 uppercase tracking-wider">Collections</span>
+                  <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Collections</span>
                 </div>
                 
                 {/* Autres catégories */}
@@ -325,7 +347,7 @@ export function Header() {
                       const IconComponent = iconMap[category.icon]
                       return IconComponent ? <IconComponent className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 group-hover:text-purple-600" /> : null
                     })()}
-                    <span className="font-body-medium text-sm transition-colors duration-200 group-hover:text-purple-600">{category.name}</span>
+                    <span className="font-bold text-sm transition-colors duration-200 group-hover:text-purple-600">{category.name}</span>
                   </Link>
                 ))}
                 
@@ -333,12 +355,12 @@ export function Header() {
                 <div className="border-t border-gray-200 my-4 pt-4">
                   <div className="grid grid-cols-2 gap-3">
                     <Link
-                      href="/account"
+                      href="/profile"
                       className="group flex items-center space-x-2 text-gray-600 hover:text-green-600 hover:bg-green-50 active:bg-green-100 active:scale-95 transition-all duration-200 ease-out py-3 px-4 rounded-xl hover:shadow-sm cursor-pointer"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <User className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 group-hover:text-green-600" />
-                      <span className="font-body-medium text-sm transition-colors duration-200 group-hover:text-green-600">Mon compte</span>
+                      <span className="font-bold text-sm transition-colors duration-200 group-hover:text-green-600">Mon compte</span>
                     </Link>
                     <Link
                       href="/wishlist"
@@ -346,7 +368,7 @@ export function Header() {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <Heart className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 group-hover:text-red-500 group-hover:fill-red-500" />
-                      <span className="font-body-medium text-sm transition-colors duration-200 group-hover:text-red-500">Favoris</span>
+                      <span className="font-bold text-sm transition-colors duration-200 group-hover:text-red-500">Favoris</span>
                     </Link>
                   </div>
                 </div>
@@ -357,7 +379,16 @@ export function Header() {
       </header>
 
       {/* Cart Drawer */}
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <NoSSR>
+        <CartDrawer 
+          isOpen={cartStore.isOpen} 
+          onClose={() => cartStore.setCartOpen(false)}
+          items={cartStore.items}
+          onUpdateQuantity={cartStore.updateQuantity}
+          onRemoveItem={cartStore.removeFromCart}
+          onClearCart={cartStore.clearCart}
+        />
+      </NoSSR>
     </>
   )
 }
