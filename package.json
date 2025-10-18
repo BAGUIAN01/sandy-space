@@ -18,6 +18,7 @@
     "safe-auth": "node scripts/safe-auth-integration.js"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.11.0",
     "@hookform/resolvers": "^3.3.1",
     "@prisma/client": "^6.17.1",
     "@radix-ui/react-slot": "^1.2.3",
